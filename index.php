@@ -1,6 +1,4 @@
 <?php
-include_once './app/vendor/autoload.php';
-include_once './app/Ecdsa.php';
 include_once './app/header.php';
 
 $result = false;

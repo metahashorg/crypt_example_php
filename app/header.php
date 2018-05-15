@@ -1,3 +1,7 @@
+<?php
+include_once './app/vendor/autoload.php';
+include_once './app/Ecdsa.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
