@@ -31,3 +31,4 @@ catch(Example $e)
 <pre><code><?=$data['address']?></code></pre>
 <?php
 include_once 'app/footer.php';
+?>
