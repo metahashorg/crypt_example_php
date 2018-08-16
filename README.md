@@ -16,13 +16,6 @@ php crypt_example.php [params]
 ```
 
 ## List of methods:
-- generate        generate MH address
-- fetch-balance   get balance for MH address
-- fetch-history   get history for MH address
-- get-tx          get transaction information by hash
-- send-tx         create and send transaction
-
-Outputs examples
 
 
 #### generate
