@@ -5,9 +5,9 @@
 - mdanter/ecc
 
 ## Dependencies
-
-1) install  `composer require mdanter/ecc:0.4.2`
-2) create a folder `date` and set permissions 0777
+1) go to the folder with the script `crypt_example.php`
+2) install  `composer require mdanter/ecc:0.4.2`
+3) create a folder `date` and set permissions 0777
 
 ## Usage
 
@@ -29,7 +29,7 @@ php crypt_example.php method=generate
 Get balance for MH address
 
 Params:
-- net	network
+- net - network (main, dev)
 - address - MH address
 
 ```shell
@@ -39,7 +39,7 @@ php crypt_example.php method=fetch-balance net=dev address=0x003d3b27f544d1dc03d
 Get history for MH address
 
 Params:
-- net	network
+- net - network (main, dev)
 - address - MH address
 
 ```shell
@@ -50,8 +50,8 @@ php crypt_example.php method=fetch-history net=dev address=0x003d3b27f544d1dc03d
 Get transaction information by hash
 
 Params:
-- net	network
-- hash	transaction hash
+- net - network (main, dev)
+- hash - transaction hash
 
 ```shell
 php crypt_example.php method=get-tx net=dev hash=ee0e11b793ff5a5b0d6954f0da4964ceb53f9887480e9a5e42608830ed401963
@@ -61,7 +61,7 @@ php crypt_example.php method=get-tx net=dev hash=ee0e11b793ff5a5b0d6954f0da4964c
 Create and send transaction
 
 Params:
-- net	network
+- net - network (main, dev)
 - address - MH address (from created addresses)
 - to - MH address
 - value
