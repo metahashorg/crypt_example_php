@@ -1,5 +1,5 @@
 # Crypt example PHP
-This repository contains a PHP scripts that enable to generate MetaHash addresses, check its balance and see the full transaction history. Besides, `crypt_example.php` and `crypt_example_bin.php` scripts describe methods allowing to create and send transactions as well as to obtain information on transaction via its hash. `crypt_example.php` script works with `mdanter/ecc` library. `crypt_example_bin.php` script is written using our driver for PHP [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto). 
+This repository contains a PHP scripts that enable to generate MetaHash addresses, check its balance and see the full transaction history. Besides, `crypt_example.php` and `crypt_example_bin.php` scripts describe methods allowing to create and send transactions as well as to obtain information on transaction via its hash. Script `crypt_example.php` works with `mdanter/ecc` library. Script `crypt_example_bin.php` is written using our driver for PHP [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto). 
 
 ## Requirements
 
