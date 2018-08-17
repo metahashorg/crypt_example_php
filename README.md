@@ -1,3 +1,6 @@
+# Crypt example PHP
+This repository contains a PHP script that enables to generate MetaHash addresses, check its balance and see the full transaction history. Besides, `crypt_example.php` script describes methods allowing to create and send transactions as well as to obtain information on transaction via its hash.
+
 ## Requirements
 - PHP 7.1+
 - composer
@@ -5,9 +8,9 @@
 - mdanter/ecc
 
 ## Dependencies
-1) go to the folder with the script `crypt_example.php`
+1) open the folder with `crypt_example.php` script
 2) install  `composer require mdanter/ecc:0.5.0`
-3) create the folder `data` and set permissions 0777
+3) create the folder `data` and set Read and Write permissions (unix chmod 0777)
 
 ## Usage
 
@@ -21,6 +24,7 @@ php crypt_example.php [params]
 #### generate
 Generate MH address
 
+Example:
 ```shell
 php crypt_example.php method=generate
 ```
@@ -32,6 +36,7 @@ Params:
 - net - network (main, dev)
 - address - MH address
 
+Example:
 ```shell
 php crypt_example.php method=fetch-balance net=dev address=0x003d3b27f544d1dc03d6802e6379fdcfc25e0b73272b62496b
 ```
@@ -42,6 +47,7 @@ Params:
 - net - network (main, dev)
 - address - MH address
 
+Example:
 ```shell
 php crypt_example.php method=fetch-history net=dev address=0x003d3b27f544d1dc03d6802e6379fdcfc25e0b73272b62496b
 ```
@@ -53,6 +59,7 @@ Params:
 - net - network (main, dev)
 - hash - transaction hash
 
+Example:
 ```shell
 php crypt_example.php method=get-tx net=dev hash=ee0e11b793ff5a5b0d6954f0da4964ceb53f9887480e9a5e42608830ed401963
 ```
@@ -66,6 +73,7 @@ Params:
 - to - MH address
 - value
 
+Example:
 ```shell
 php crypt_example.php method=send-tx net=dev address=0x003d3b27f544d1dc03d6802e6379fdcfc25e0b73272b62496b to=0x00525d3f6326549b8974ef669f8fced6153109ba60d52d547d value=1000 
 ```
