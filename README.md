@@ -1,15 +1,30 @@
 # Crypt example PHP
-This repository contains a PHP script that enables to generate MetaHash addresses, check its balance and see the full transaction history. Besides, `crypt_example.php` script describes methods allowing to create and send transactions as well as to obtain information on transaction via its hash.
+This repository contains a PHP scripts that enable to generate MetaHash addresses, check its balance and see the full transaction history. Besides, `crypt_example.php` and `crypt_example_bin.php` scripts describe methods allowing to create and send transactions as well as to obtain information on transaction via its hash. `crypt_example.php` script works with `mdanter/ecc` library. `crypt_example_bin.php` script is written using our driver for PHP [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto). 
 
 ## Requirements
+
+For `crypt_example.php`
 - PHP 7.1+
 - composer
 - ext-gmp
+- ext-curl
 - mdanter/ecc
 
+For `crypt_example_bin.php`
+- PHP 7.1+
+- ext-curl
+- ext-mhcrypto (see [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto))
+
 ## Dependencies
+
+For `crypt_example.php`
 1) open the folder with `crypt_example.php` script
 2) install  `composer require mdanter/ecc:0.5.0`
+3) create the folder `data` and set Read and Write permissions (unix chmod 0777)
+
+For `crypt_example_bin.php`
+1) open the folder with `crypt_example_bin.php` script
+2) install `ext-mhcrypto`. For more details about install `ext-mhcrypto`, please see [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto).
 3) create the folder `data` and set Read and Write permissions (unix chmod 0777)
 
 ## Usage
@@ -18,8 +33,12 @@ This repository contains a PHP script that enables to generate MetaHash addresse
 php crypt_example.php [params]
 ```
 
-## List of methods:
+```shell
+php crypt_example_bin.php [params]
+```
 
+## List of methods
+All methods are present in `crypt_example.php` and `crypt_example_bin.php` scripts. Below are examples for the script `crypt_example.php`.
 
 #### generate
 Generate MH address
