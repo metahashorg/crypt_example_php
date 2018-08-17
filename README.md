@@ -6,8 +6,8 @@
 
 ## Dependencies
 1) go to the folder with the script `crypt_example.php`
-2) install  `composer require mdanter/ecc:0.4.2`
-3) create a folder `date` and set permissions 0777
+2) install  `composer require mdanter/ecc:0.5.0`
+3) create the folder `data` and set permissions 0777
 
 ## Usage
 

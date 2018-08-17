@@ -31,6 +31,7 @@ if(file_exists(ROOT_DIR.'/vendor/mdanter/ecc/src/EccFactory.php') == false)
 
 use Mdanter\Ecc\EccFactory;
 use Mdanter\Ecc\Crypto\Signature\Signer;
+use Mdanter\Ecc\Crypto\Signature\SignHasher;
 use Mdanter\Ecc\Serializer\PrivateKey\PemPrivateKeySerializer;
 use Mdanter\Ecc\Serializer\PrivateKey\DerPrivateKeySerializer;
 use Mdanter\Ecc\Serializer\PublicKey\PemPublicKeySerializer;
@@ -113,8 +114,8 @@ class Ecdsa
 		$private_key = hex2bin($private_key);
 		$key = $serializer_private->parse($private_key);
 
-		$signer = new Signer($this->adapter);
-		$hash = $signer->hashData($this->generator, $algo, $data);
+		$hasher = new SignHasher($algo, $this->adapter);
+		$hash = $hasher->makeHash($data, $this->generator);
 
 		if(!$rand)
 		{
@@ -126,6 +127,7 @@ class Ecdsa
 		}
 
 		$randomK = $random->generate($this->generator->getOrder());
+		$signer = new Signer($this->adapter);
 		$signature = $signer->sign($key, $hash, $randomK);
 
 		$serializer = new DerSignatureSerializer();
@@ -136,18 +138,20 @@ class Ecdsa
 
 	public function verify($sign, $data, $public_key, $algo = 'sha256')
 	{
-		$signer = new Signer($this->adapter);
 		$serializer = new DerSignatureSerializer();
 		$serializer_public = new DerPublicKeySerializer($this->adapter);
 
 		$public_key = $this->parse_base16($public_key);
 		$public_key = hex2bin($public_key);
 		$key = $serializer_public->parse($public_key);
-		$hash = $signer->hashData($this->generator, $algo, $data);
+
+		$hasher = new SignHasher($algo);
+		$hash = $hasher->makeHash($data, $this->generator);
 
 		$sign = $this->parse_base16($sign);
 		$sign = hex2bin($sign);
 		$serialized_sign = $serializer->parse($sign);
+		$signer = new Signer($this->adapter);
 		$check = $signer->verify($key, $serialized_sign, $hash);
 
 		return ($signer->verify($key, $serialized_sign, $hash))?true:false;
@@ -498,6 +502,11 @@ class Crypto
 		return false;
 	}
 
+	public function checkAdress($address)
+	{
+		return $this->ecdsa->checkAdress($address);
+	}
+
 	private function saveAddress($data = [])
 	{
 		if($fp = fopen(DATA_DIR.'/'.$data['address'].'.mh', 'w'))
@@ -845,7 +854,7 @@ try
 	switch($args['method'])
 	{
 		case 'generate':
-			check_net_arg($args);
+			//check_net_arg($args);
 			echo json_encode($crypto->generate());
 		break;
 
