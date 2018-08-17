@@ -14,223 +14,74 @@ if(floatval(phpversion()) < 7.1)
 
 if(extension_loaded('curl') == false)
 {
-	exit('php-curl extension not loaded ');
+	exit('php-curl extension not loaded');
 }
 
-if(extension_loaded('gmp') == false)
+if(extension_loaded('mhcrypto') == false)
 {
-	exit('php-gmp extension not loaded ');
+	throw new Exception('mhcrypto extension not loaded');
 }
-
-if(file_exists(ROOT_DIR.'/vendor/autoload.php') == false)
-{
-	exit('`vendor/autoload.php` not found  in '.ROOT_DIR);
-}
-
-include_once 'vendor/autoload.php';
-
-if(file_exists(ROOT_DIR.'/vendor/mdanter/ecc/src/EccFactory.php') == false)
-{
-	exit('`mdanter/ecc` not found. Please run composer command `composer require mdanter/ecc:0.4.2`');
-}
-
-use Mdanter\Ecc\EccFactory;
-use Mdanter\Ecc\Crypto\Signature\Signer;
-use Mdanter\Ecc\Crypto\Signature\SignHasher;
-use Mdanter\Ecc\Serializer\PrivateKey\PemPrivateKeySerializer;
-use Mdanter\Ecc\Serializer\PrivateKey\DerPrivateKeySerializer;
-use Mdanter\Ecc\Serializer\PublicKey\PemPublicKeySerializer;
-use Mdanter\Ecc\Serializer\PublicKey\DerPublicKeySerializer;
-use Mdanter\Ecc\Serializer\Signature\DerSignatureSerializer;
-use Mdanter\Ecc\Random\RandomGeneratorFactory;
 
 class Ecdsa
 {
-	private $adapter;
-	private $generator;
-
 	public function __construct()
 	{
-		$this->adapter = EccFactory::getAdapter();
-		$this->generator = EccFactory::getSecgCurves()->generator256r1();
+		
 	}
 
 	public function getKey()
 	{
-		$result = array(
+		$result = [
 			'private' => null,
 			'public' => null,
-		);
+			'address' => null
+		];
 
-		$private = $this->generator->createPrivateKey();
-		$serializer_private = new DerPrivateKeySerializer($this->adapter);
-		$data_private = $serializer_private->serialize($private);
-		$result['private'] = '0x'.bin2hex($data_private);
+		mhcrypto_generate_wallet($result['private'], $result['public'], $result['address']);
 
-		$public = $private->getPublicKey();
-		$serializer_public = new DerPublicKeySerializer($this->adapter);
-		$data_public = $serializer_public->serialize($public);
-		$result['public'] = '0x'.bin2hex($data_public);
+		foreach($result as &$val)
+		{
+			$val = $this->to_base16($val);
+		}
 
 		return $result;
 	}
 
 	public function privateToPublic($private_key)
 	{
-		$serializer_private = new DerPrivateKeySerializer($this->adapter);
-		$private_key = $this->parse_base16($private_key);
-		$private_key = hex2bin($private_key);
-		$key = $serializer_private->parse($private_key);
-
-		$public = $key->getPublicKey();
-		$serializer_public = new DerPublicKeySerializer($this->adapter);
-		$data_public = $serializer_public->serialize($public);
-		$result = '0x'.bin2hex($data_public);
+		$public_key = null;
+		mhcrypto_generate_public($private_key, $public_key);
+		$result = '0x'.$public_key;
 
 		return $result;
 	}
 
-	public function parsePrivatePem($private_key)
+	public function sign($data, $private_key)
 	{
-		$serializer_private_der = new DerPrivateKeySerializer($this->adapter);
-		$serializer_private_pem = new PemPrivateKeySerializer($serializer_private_der);
-		$key = $serializer_private_pem->parse($private_key);
-		$result = $serializer_private_der->serialize($key);
-		$result = '0x'.bin2hex($result);
+		$sign = null;
+		mhcrypto_sign_text($sign, $private_key, $data);
 
-		return $result;
+		return '0x'.bin2hex($sign);
 	}
 
-	public function parsePublicPem($public_key)
+	public function verify($sign, $data, $public_key)
 	{
-		$serializer_public_der = new DerPublicKeySerializer($this->adapter);
-		$serializer_public_pem = new PemPublicKeySerializer($serializer_public_der);
-		$key = $serializer_public_pem->parse($public_key);
-		$result = $serializer_public_der->serialize($key);
-		$result = '0x'.bin2hex($result);
-
-		return $result;
+		return mhcrypto_check_sign_text($this->hex2bin($sign), $public_key, $data);
 	}
 
-	public function sign($data, $private_key, $rand = false, $algo = 'sha256')
+	public function getAdress($key)
 	{
-		$serializer_private = new DerPrivateKeySerializer($this->adapter);
-		$private_key = $this->parse_base16($private_key);
-		$private_key = hex2bin($private_key);
-		$key = $serializer_private->parse($private_key);
+		$address = null;
+		mhcrypto_generate_address($key, $address);
 
-		$hasher = new SignHasher($algo, $this->adapter);
-		$hash = $hasher->makeHash($data, $this->generator);
-
-		if(!$rand)
-		{
-			$random = RandomGeneratorFactory::getHmacRandomGenerator($key, $hash, $algo);
-		}
-		else
-		{
-			$random = RandomGeneratorFactory::getRandomGenerator();
-		}
-
-		$randomK = $random->generate($this->generator->getOrder());
-		$signer = new Signer($this->adapter);
-		$signature = $signer->sign($key, $hash, $randomK);
-
-		$serializer = new DerSignatureSerializer();
-		$serialized_sign = $serializer->serialize($signature);
-
-		return '0x'.bin2hex($serialized_sign);
-	}
-
-	public function verify($sign, $data, $public_key, $algo = 'sha256')
-	{
-		$serializer = new DerSignatureSerializer();
-		$serializer_public = new DerPublicKeySerializer($this->adapter);
-
-		$public_key = $this->parse_base16($public_key);
-		$public_key = hex2bin($public_key);
-		$key = $serializer_public->parse($public_key);
-
-		$hasher = new SignHasher($algo);
-		$hash = $hasher->makeHash($data, $this->generator);
-
-		$sign = $this->parse_base16($sign);
-		$sign = hex2bin($sign);
-		$serialized_sign = $serializer->parse($sign);
-		$signer = new Signer($this->adapter);
-		$check = $signer->verify($key, $serialized_sign, $hash);
-
-		return ($signer->verify($key, $serialized_sign, $hash))?true:false;
-	}
-
-	public function checkPublicKey($key)
-	{
-		$result = false;
-
-		try
-		{
-			$serializer_public = new DerPublicKeySerializer($this->adapter);
-			$key = $this->parse_base16($key);
-			$key = hex2bin($key);
-			$key_parse = $serializer_public->parse($key);
-			if(is_object($key_parse) && $key_parse instanceof Mdanter\Ecc\Crypto\Key\PublicKey)
-			{
-				$result = true;
-			}
-		}
-		catch(Exception $e)
-		{
-			//empty
-		}
-
-		return $result;
-	}
-
-	public function getAdress($key, $net = '00')
-	{
-		$code = '';
-
-		$serializer_public = new DerPublicKeySerializer($this->adapter);
-		$key = $this->parse_base16($key);
-		$key = hex2bin($key);
-		$key = $serializer_public->parse($key);
-		$x = gmp_strval($key->getPoint()->getX(), 16);
-		$xlen = 64 - strlen($x);
-		$x = ($xlen > 0)?str_repeat('0', $xlen).$x:$x;
-		$y = gmp_strval($key->getPoint()->getY(), 16);
-		$ylen = 64 - strlen($y);
-		$y = ($ylen > 0)?str_repeat('0', $ylen).$y:$y;
-
-		$code = '04'.$x.$y;
-		$code = hex2bin($code);
-		$code = hex2bin(hash('sha256', $code));
-		$code = $net.hash('ripemd160', $code);
-		$code = hex2bin($code);
-		$hash_summ = hex2bin(hash('sha256', $code));
-		$hash_summ = hash('sha256', $hash_summ);
-		$hash_summ = substr($hash_summ, 0, 8);
-		$code = bin2hex($code).$hash_summ;
-
-		return '0x'.$code;
+		return '0x'.$address;
 	}
 
 	public function checkAdress($address)
 	{
 		if(!empty($address))
 		{
-			if(strlen($this->parse_base16($address))%2) return false;
-
-			$address_hash_summ = substr($address, strlen($address) - 8, 8);
-			$code = substr($address, 0, strlen($address) - 8);
-			$code = substr($code, 2);
-			$code = hex2bin($code);
-			$hash_summ = hex2bin(hash('sha256', $code));
-			$hash_summ = hash('sha256', $hash_summ);
-			$hash_summ = substr($hash_summ, 0, 8);
-			
-			if($address_hash_summ === $hash_summ)
-			{
-				return true;
-			}
+			return mhcrypto_check_address($address);
 		}
 
 		return false;
