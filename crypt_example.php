@@ -863,6 +863,8 @@ try
 	$args['hash'] = isset($args['hash']) && !empty($args['hash'])?strtolower($args['hash']):null;
 	$args['to'] = isset($args['to']) && !empty($args['to'])?strtolower($args['to']):null;
 	$args['value'] = isset($args['value']) && !empty($args['value'])?number_format($args['value'], 0, '', ''):0;
+	$args['fee'] = '';//isset($args['fee']) && !empty($args['fee'])?number_format($args['fee'], 0, '', ''):0;
+	$args['data'] = '';//isset($args['data']) && !empty($args['data'])?$args['data']:null;
 	$args['nonce'] = isset($args['nonce']) && !empty($args['nonce'])?intval($args['nonce']):0;
 
 	if(empty($args['method']) || $args['method'] == null)
@@ -928,9 +930,9 @@ try
 			}
 
 			$nonce = $crypto->getNonce($args['address']);
-			$sign_text = $crypto->makeSign($args['to'], intval($args['value']), intval($nonce), 0, '', 0);
+			$sign_text = $crypto->makeSign($args['to'], strval($args['value']), strval($nonce), strval($args['fee']), $args['data']);
 			$sign = $crypto->sign($sign_text, $keys['private']);
-			$res = $crypto->sendTx($args['to'], $args['value'], '', $nonce, '', $keys['public'], $sign);
+			$res = $crypto->sendTx($args['to'], $args['value'], $args['fee'], $nonce, $args['data'], $keys['public'], $sign);
 
 			echo json_encode($res);
 		break;
