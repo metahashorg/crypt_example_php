@@ -1,5 +1,7 @@
 # Crypt example PHP
-This repository contains a PHP scripts that enable to generate MetaHash addresses, check its balance and see the full transaction history. Besides, `crypt_example.php` and `crypt_example_bin.php` scripts describe methods allowing to create and send transactions as well as to obtain information on transaction via its hash. Script `crypt_example.php` works with `mdanter/ecc` library. Script `crypt_example_bin.php` is written using our driver for PHP [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto). 
+This repository contains PHP scripts that enable to generate MetaHash addresses, check its balance and see the full transaction history. Besides, `crypt_example.php` and `crypt_example_bin.php` scripts describe methods allowing to create and send transactions as well as to obtain information on transaction via its hash. To learn more about all operations listed above please read the following articles: [Getting started with Metahash network](https://support.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network), [Creating transactions](https://support.metahash.org/hc/en-us/articles/360003271694-Creating-transactions) and [Operations with MetaHash address](https://support.metahash.org/hc/en-us/articles/360008382213-Operations-with-MetaHash-address). 
+
+Script `crypt_example.php` works with `mdanter/ecc` library. Script `crypt_example_bin.php` is written using our driver for PHP [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto). 
 
 ## Requirements
 
@@ -24,7 +26,7 @@ For `crypt_example.php`
 
 For `crypt_example_bin.php`
 1) open the folder with `crypt_example_bin.php` script
-2) install `ext-mhcrypto`. For more details about install `ext-mhcrypto`, please see [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto).
+2) install `ext-mhcrypto`. For more details about installing `ext-mhcrypto`, please see [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto).
 3) create the folder `data` and set Read and Write permissions (unix chmod 0777)
 
 ## Usage
