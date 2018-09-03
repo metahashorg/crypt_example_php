@@ -1,15 +1,16 @@
 # Crypt example PHP
 This repository contains PHP scripts that enable to generate MetaHash addresses, check its balance and see the full transaction history. Besides, `crypt_example.php` script describe methods allowing to create and send transactions as well as to obtain information on transaction via its hash. To learn more about all operations listed above please read the following articles: [Getting started with Metahash network](https://support.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network), [Creating transactions](https://support.metahash.org/hc/en-us/articles/360003271694-Creating-transactions) and [Operations with MetaHash address](https://support.metahash.org/hc/en-us/articles/360008382213-Operations-with-MetaHash-address). 
 
-Существует 2 пути работы скрипта:
-1) C использованием расширения для php `mhcrypto`:
-	- высокая скорость работы (генерация ключей / адресов / подписей, валидация подписи)
-	- отсутствие дополнительных файлов в папке проекта
-2) С использованием php библиотеки `mdanter/ecc`
-	- 
+There are 2 ways to work the script:
+1) C using the extension for php `mhcrypto`:
+- high speed of work (generation of keys / addresses / signatures, signature validation);
+- no additional files in the project folder;
+- requires additional steps to install and configure the extension.
+2) Using the php library of `mdanter / ecc`:
+- simple installation;
+- the presence of additional files in the project folder.
 
-
-
+You can use the path that suits you.
 
 ## Requirements
 
@@ -45,35 +46,39 @@ sudo apt-get update -y
 sudo apt-get install php7.2-cli php7.2-curl php7.2-dev php7.2-gmp
 ```
 
-3) Install composer
-```shell
-sudo apt-get install composer
-```
-4) Install mdanter/ecc with composer
-```shell
-composer require mdanter/ecc:0.5.0
-```
+3) For `mdanter/ecc` library
 
-Sample output:
-```shell
-Using version 0.5.0 for mdanter/ecc
-./composer.json has been created
-Loading composer repositories with package information
-Updating dependencies (including require-dev)
-  - Installing fgrosse/phpasn1 (2.0.1)
-    Downloading: 100%
+	a) Install composer
+	```shell
+	sudo apt-get install composer
+	```
+	b) Install mdanter/ecc with composer
+	```shell
+	composer require mdanter/ecc:0.5.0
+	```
 
-  - Installing mdanter/ecc (v0.5.0)
-    Downloading: 100%
+	Sample output:
+	```shell
+	Using version 0.5.0 for mdanter/ecc
+	./composer.json has been created
+	Loading composer repositories with package information
+	Updating dependencies (including require-dev)
+	  - Installing fgrosse/phpasn1 (2.0.1)
+	    Downloading: 100%
 
-fgrosse/phpasn1 suggests installing php-curl (For loading OID information from the web if they have not bee defined statically)
+	  - Installing mdanter/ecc (v0.5.0)
+	    Downloading: 100%
 
-mdander/ecc will be install in vendor/ folder in current directory
-```
+	fgrosse/phpasn1 suggests installing php-curl (For loading OID information from the web if they have not bee defined statically)
 
-5) Install `ext-mhcrypto` For more details about installing `ext-mhcrypto`, please see [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto).
+	mdander/ecc will be install in vendor/ folder in current directory
+	```
 
-6) Create the folder `data` and set Read and Write permissions (unix chmod 0777)
+4) For `mhcrypto` extension 
+
+	a) Install `ext-mhcrypto`. For more details about installing `ext-mhcrypto`, please see [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto).
+
+5) Create the folder `data` and set Read and Write permissions (unix chmod 0777)
 
 
 ## Usage
@@ -83,7 +88,12 @@ php crypt_example.php [params]
 ```
 
 ## List of methods
-All methods are present in `crypt_example.php` and `crypt_example_bin.php` scripts. Below are examples for the script `crypt_example.php`.
+All methods are present in `crypt_example.php`.
+
+The script works with the following networks:
+- `test` Test network with the ability to create an address with a balance
+- `dev` Test network
+- `main` main network
 
 #### generate
 Generate MH address
@@ -97,47 +107,47 @@ php crypt_example.php method=generate
 Get balance for MH address
 
 Params:
-- net - network (main, dev)
+- net - network
 - address - MH address
 
 Example:
 ```shell
-php crypt_example.php method=fetch-balance net=dev address=0x003d3b27f544d1dc03d6802e6379fdcfc25e0b73272b62496b
+php crypt_example.php method=fetch-balance net=test address=0x003d3b27f544d1dc03d6802e6379fdcfc25e0b73272b62496b
 ```
 #### fetch-history
 Get history for MH address
 
 Params:
-- net - network (main, dev)
+- net - network
 - address - MH address
 
 Example:
 ```shell
-php crypt_example.php method=fetch-history net=dev address=0x003d3b27f544d1dc03d6802e6379fdcfc25e0b73272b62496b
+php crypt_example.php method=fetch-history net=test address=0x003d3b27f544d1dc03d6802e6379fdcfc25e0b73272b62496b
 ```
 
 #### get-tx
 Get transaction information by hash
 
 Params:
-- net - network (main, dev)
+- net - network
 - hash - transaction hash
 
 Example:
 ```shell
-php crypt_example.php method=get-tx net=dev hash=ee0e11b793ff5a5b0d6954f0da4964ceb53f9887480e9a5e42608830ed401963
+php crypt_example.php method=get-tx net=test hash=ee0e11b793ff5a5b0d6954f0da4964ceb53f9887480e9a5e42608830ed401963
 ```
 
 #### send-tx
 Create and send transaction
 
 Params:
-- net - network (main, dev)
+- net - network
 - address - MH address (from created addresses)
 - to - MH address
 - value
 
 Example:
 ```shell
-php crypt_example.php method=send-tx net=dev address=0x003d3b27f544d1dc03d6802e6379fdcfc25e0b73272b62496b to=0x00525d3f6326549b8974ef669f8fced6153109ba60d52d547d value=1000 
+php crypt_example.php method=send-tx net=test address=0x003d3b27f544d1dc03d6802e6379fdcfc25e0b73272b62496b to=0x00525d3f6326549b8974ef669f8fced6153109ba60d52d547d value=1000 
 ```
