@@ -27,9 +27,24 @@ body {
 	width: 100%;
 }
 
-.bootstrap-select .btn
-{
+label{
+	font-size: 0.95rem;
+}
+.form-control-lg{
+	font-size: 1rem;
+	padding: 0.5rem 1rem;
+	line-height: 2;
+}
+
+.bootstrap-select .btn{
     border: 1px solid #ced4da;
+}
+
+#transactionform label a {
+    border-bottom: 1px dashed;
+    text-decoration: none;
+    cursor: pointer;
+    color: #2F7BC2;
 }
 
 .api__big-tit {
@@ -429,9 +444,11 @@ input:-webkit-autofill:focus {
 .api__lasttrans-table td:nth-child(1) {
 	color: #2F7BC2;
 	padding-left: 15px;
+	min-width: 370px;
 }
 .api__lasttrans-table td:nth-child(2) {
 	color: #2F7BC2;
+	min-width: 370px;
 }
 .api__lasttrans-table td:nth-child(3) {
 	width: 14%;

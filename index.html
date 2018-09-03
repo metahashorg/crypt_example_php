@@ -11,200 +11,196 @@
 </head>
 <body>
 	<div class="container">
-		<div class="row">
-			<div class="col-md-10 col-md-offset-1">
 
-				<h1>#MetaAPI</h1>
-				<h5>Developers API for #MHC transactions in #MetaHash network</h5>
+		<h1>#MetaAPI</h1>
+		<h5>Developers API for #MHC transactions in #MetaHash network</h5>
 
-				<form id="transactionform" class="mt-5">
-					<h3>
-						Send transations to #MetaHash
-					</h3>
-					<div class="row">
-						<div class="col-md-3">
-							<div class="form-group">
-								<label for="transactionform_value">#MHC value to send:</label>
-								<input type="text" class="form-control form-control-lg" id="transactionform_value"  value="0">
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label for="transactionform_fee">Max fee:</label>
-								<input type="text" class="form-control form-control-lg" id="transactionform_fee"  value="0" disabled>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="transactionform_value">Transaction data:</label>
-								<input type="text" class="form-control form-control-lg" id="transactionform_value"  value="" disabled>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<div class="form-group">
-								<div class="float-right form-text text-muted">
-									Copy your private keys to <code>data/</code> folder to appear in the list or <a href="#walletcreateform">create a new wallet</a>
-								</div>
-								<label for="transactionform_address">
-									From wallet:
-								</label>
-								<select class="form-control form-control-lg selectpicker" id="transactionform_address"></select>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-8">
-							<div class="form-group">
-								<label for="transactionform_to">To #MHC address:</label>
-								<input type="text" class="form-control form-control-lg" id="transactionform_to" value="">
-							</div>
-						</div>
-						<div class="col-4">
-							<div class="form-group">
-								<label for="">&nbsp;</label>
-								<button class="btn btn-primary form-control form-control-lg">Send transaction</button>
-							</div>
-						</div>
-					</div>
-				</form>
-
-				<div id="transactionlogs_wrap" class="mt-4">
-					<div class="row">
-						<div class="col-md-12">
-							<textarea id="transactionlogs" placeholder="No logs to show" readonly=""></textarea>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<button class="btn btn-primary btn-sm" id="transactionlogs_copy" disabled>Copy</button>
-							<button class="btn btn-primary btn-sm" id="transactionlogs_clear" disabled>Clear</button>
-						</div>
+		<form id="transactionform" class="mt-5">
+			<h3>
+				Send transations to #MetaHash
+			</h3>
+			<div class="row">
+				<div class="col-sm-12 col-md-3">
+					<div class="form-group">
+						<label for="transactionform_value">#MHC value to send:</label>
+						<input type="text" class="form-control form-control-lg" id="transactionform_value"  value="0">
 					</div>
 				</div>
-
-
-				<div id="transactionlogs_wrap" class="mt-4">
-					<h4>Last transactions</h4>
-
-					<div class="row">
-						<div class="col-md-12 no-more-tables">
-							<table class="api__lasttrans-table" id="transactionshistory">
-								<thead>
-									<tr>
-										<th>From</th>
-										<th>To</th>
-										<th>Value</th>
-										<th>Status</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr class="api__empty_lastransrow">
-										<td colspan="4">No transactions to show</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+				<div class="col-sm-12 col-md-3">
+					<div class="form-group">
+						<label for="transactionform_fee">Max fee:</label>
+						<input type="text" class="form-control form-control-lg" id="transactionform_fee"  value="0" disabled>
 					</div>
 				</div>
-
-				<div class="mt-5">
-					<h2>
-						Developer information
-					</h2>
-
-					<h4 class="mt-4">
-						Files and functions
-					</h4>
-					<div class="api__overdevinf-block">
-						<div class="row">
-							<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>data/[wallet address].mh</code></div>
-							<div class="col-md-7 col-sm-12 api__devinf-block row2">Keys files to sign #MetaHash transactions</div>
-							<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>crypt_example.php</code></div>
-							<div class="col-md-7 col-sm-12 api__devinf-block row2">Connects to #MetaHash protocol</div>
-				
-							<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>README.md</code></div>
-							<div class="col-md-7 col-sm-12 api__devinf-block row2">Full API instructions</div>
-							<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>index.html</code></div>
-							<div class="col-md-7 col-sm-12 api__devinf-block row2">Test-tool to send test transactions</div>
-						</div>
-					</div>
-
-					<h4 class="mt-5">
-						API Calls
-					</h4>
-					<div class="api__overdevinf-block">
-						<div class="row">
-							<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>generate</code></div>
-							<div class="col-md-7 col-sm-12 api__devinf-block row2">Generate MH address</div>
-							<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>fetch-balance</code></div>
-							<div class="col-md-7 col-sm-12 api__devinf-block row2">Get balance for MH address</div>
-							<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>fetch-history</code></div>
-							<div class="col-md-7 col-sm-12 api__devinf-block row2">Get history for MH address</div>
-							<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>get-tx</code></div>
-							<div class="col-md-7 col-sm-12 api__devinf-block row2">Get transaction information by hash</div>
-							<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>send-tx</code></div>
-							<div class="col-md-7 col-sm-12 api__devinf-block row2">Create and send transaction</div>
-						</div>
-					</div>
-
-					<h4 class="mt-5">
-						Additional information
-					</h4>
-					<div class="api__overdevinf-block">
-						<div class="row">
-							<div class="col-md-5 col-sm-12 api__devinf-block row1">#MetaHash Developer Portal</div>
-							<div class="col-md-7 col-sm-12 api__devinf-block row2"><a>https://support.metahash.com</a></div>
-							<div class="col-md-5 col-sm-12 api__devinf-block row1">#MetaHash in GitHub</div>
-							<div class="col-md-7 col-sm-12 api__devinf-block row2"><a>https://github.com/metahashorg</a></div>
-							<div class="col-md-5 col-sm-12 api__devinf-block row1">Contact Support</div>
-							<div class="col-md-7 col-sm-12 api__devinf-block row2"><a>support@metahash.org</a></div>
-							<div class="col-md-5 col-sm-12 api__devinf-block row1">#MetaHash Website</div>
-							<div class="col-md-7 col-sm-12 api__devinf-block row2"><a>https://metahash.org</a></div>
-						</div>
+				<div class="col-sm-12 col-md-6">
+					<div class="form-group">
+						<label for="transactionform_value">Transaction data:</label>
+						<input type="text" class="form-control form-control-lg" id="transactionform_value"  value="" disabled>
 					</div>
 				</div>
-				<div id="walletcreateform" class="mt-5">
-					<h2>
-						Create new wallet
-					</h2>
-					<div class="row">						
-						<div class="col-lg-5 col-md-5">
-							<div class="form-group">
-								<label for="createwallet_button">Wallet keyfile will be stored in <code>data/</code></label>
-								<button class="btn btn-primary form-control form-control-lg" id="createwallet_button">Create wallet</button>
-							</div>
-						</div>
-						<div class="col-lg-7 col-md-7">
-							<div class="form-group">
-								<label for="transactionform_to">Wallet address:</label>
-								<input type="text" class="form-control form-control-lg" id="createwallet_input" value="" placeholder="Here will be your new wallet address" readonly>
-							</div>
-						</div>
-					</div>
-					<div class="row">						
-						<div class="col-lg-12 col-md-12">
-							<div class="t-tle">
-								<div class="t-row">
-									<div class="t-cell">
-										<p class="api__create-hint success" id="createwallet_success" style="display: none">
-											Wallet successfully created.
-										</p>
-									</div>
-								</div>
-							</div>
-						</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group">
+						<label class="float-right text-muted">
+							Copy your private keys to <code>data/</code> folder to appear in the list or <a href="#walletcreateform">create a new wallet</a>
+						</label>
+						<label for="transactionform_address">
+							From wallet:
+						</label>
+						<select class="form-control form-control-lg selectpicker" id="transactionform_address"></select>
 					</div>
 				</div>
-				<footer>
-					<div class="float-right"><img class="api__foot-logo" src="static/images/logo_mail.svg" alt=""></div>
-					<p class="api__foot-text">
-						Copyright © 2017-2018 #MetaHash.<br> All Rights Reserved
-					</p>
-				</footer>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 col-md-8">
+					<div class="form-group">
+						<label for="transactionform_to">To #MHC address:</label>
+						<input type="text" class="form-control form-control-lg" id="transactionform_to" value="">
+					</div>
+				</div>
+				<div class="col-sm-12 col-md-4">
+					<div class="form-group">
+						<label for="">&nbsp;</label>
+						<button class="btn btn-primary form-control form-control-lg">Send transaction</button>
+					</div>
+				</div>
+			</div>
+		</form>
+
+		<div id="transactionlogs_wrap" class="mt-4">
+			<div class="row">
+				<div class="col-md-12">
+					<textarea id="transactionlogs" placeholder="No logs to show" readonly=""></textarea>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<button class="btn btn-primary btn-sm" id="transactionlogs_copy" disabled>Copy</button>
+					<button class="btn btn-primary btn-sm" id="transactionlogs_clear" disabled>Clear</button>
+				</div>
 			</div>
 		</div>
+
+
+		<div id="transactionlogs_wrap" class="mt-4">
+			<h4>Last transactions</h4>
+
+			<div class="row">
+				<div class="col-md-12 no-more-tables">
+					<table class="api__lasttrans-table" id="transactionshistory">
+						<thead>
+							<tr>
+								<th>From</th>
+								<th>To</th>
+								<th>Value</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="api__empty_lastransrow">
+								<td colspan="4">No transactions to show</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div class="mt-5">
+			<h2>
+				Developer information
+			</h2>
+
+			<h4 class="mt-4">
+				Files and functions
+			</h4>
+			<div class="api__overdevinf-block">
+				<div class="row">
+					<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>data/[wallet address].mh</code></div>
+					<div class="col-md-7 col-sm-12 api__devinf-block row2">Keys files to sign #MetaHash transactions</div>
+					<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>crypt_example.php</code></div>
+					<div class="col-md-7 col-sm-12 api__devinf-block row2">Connects to #MetaHash protocol</div>
+		
+					<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>README.md</code></div>
+					<div class="col-md-7 col-sm-12 api__devinf-block row2">Full API instructions</div>
+					<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>index.html</code></div>
+					<div class="col-md-7 col-sm-12 api__devinf-block row2">Test-tool to send test transactions</div>
+				</div>
+			</div>
+
+			<h4 class="mt-5">
+				API Calls
+			</h4>
+			<div class="api__overdevinf-block">
+				<div class="row">
+					<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>generate</code></div>
+					<div class="col-md-7 col-sm-12 api__devinf-block row2">Generate MH address</div>
+					<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>fetch-balance</code></div>
+					<div class="col-md-7 col-sm-12 api__devinf-block row2">Get balance for MH address</div>
+					<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>fetch-history</code></div>
+					<div class="col-md-7 col-sm-12 api__devinf-block row2">Get history for MH address</div>
+					<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>get-tx</code></div>
+					<div class="col-md-7 col-sm-12 api__devinf-block row2">Get transaction information by hash</div>
+					<div class="col-md-5 col-sm-12 api__devinf-block row1"><code>send-tx</code></div>
+					<div class="col-md-7 col-sm-12 api__devinf-block row2">Create and send transaction</div>
+				</div>
+			</div>
+
+			<h4 class="mt-5">
+				Additional information
+			</h4>
+			<div class="api__overdevinf-block">
+				<div class="row">
+					<div class="col-md-5 col-sm-12 api__devinf-block row1">#MetaHash Developer Portal</div>
+					<div class="col-md-7 col-sm-12 api__devinf-block row2"><a>https://support.metahash.com</a></div>
+					<div class="col-md-5 col-sm-12 api__devinf-block row1">#MetaHash in GitHub</div>
+					<div class="col-md-7 col-sm-12 api__devinf-block row2"><a>https://github.com/metahashorg</a></div>
+					<div class="col-md-5 col-sm-12 api__devinf-block row1">Contact Support</div>
+					<div class="col-md-7 col-sm-12 api__devinf-block row2"><a>support@metahash.org</a></div>
+					<div class="col-md-5 col-sm-12 api__devinf-block row1">#MetaHash Website</div>
+					<div class="col-md-7 col-sm-12 api__devinf-block row2"><a>https://metahash.org</a></div>
+				</div>
+			</div>
+		</div>
+		<div id="walletcreateform" class="mt-5">
+			<h2>
+				Create new wallet
+			</h2>
+			<div class="row">						
+				<div class="col-lg-5 col-md-5">
+					<div class="form-group">
+						<label for="createwallet_button">Wallet keyfile will be stored in <code>data/</code></label>
+						<button class="btn btn-primary form-control form-control-lg" id="createwallet_button">Create wallet</button>
+					</div>
+				</div>
+				<div class="col-lg-7 col-md-7">
+					<div class="form-group">
+						<label for="transactionform_to">Wallet address:</label>
+						<input type="text" class="form-control form-control-lg" id="createwallet_input" value="" placeholder="Here will be your new wallet address" readonly>
+					</div>
+				</div>
+			</div>
+			<div class="row">						
+				<div class="col-lg-12 col-md-12">
+					<div class="t-tle">
+						<div class="t-row">
+							<div class="t-cell">
+								<p class="api__create-hint success" id="createwallet_success" style="display: none">
+									Wallet successfully created.
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer>
+			<div class="float-right"><img class="api__foot-logo" src="static/images/logo_mail.svg" alt=""></div>
+			<p class="api__foot-text">
+				Copyright © 2017-2018 #MetaHash.<br> All Rights Reserved
+			</p>
+		</footer>
 	</div>
 
 	<!-- Modal -->
