@@ -1,15 +1,37 @@
-
 body {
 	font-family: 'Roboto', sans-serif;
 	padding-top: 45px;
 	color: #050B20;
 	background: #F9F9F9;
 }
-input[type=text][disabled]
-{
-	background:#f1f1f1;
-	color: #555;
+
+:focus {
+    outline-style: none;
+    outline-width: 0px !important;
+    outline-color: none !important;
 }
+
+#transactionlogs {
+	background: #eee;
+	border-radius: 4px;
+	padding: 15px 20px;
+	color: #636363;
+	font-size: 12px;
+	font-weight: 300;
+    white-space: pre-wrap;
+	word-break: break-all;
+	line-height: 18px;
+	height: 100px;
+	overflow-y: auto;
+	border: none;
+	width: 100%;
+}
+
+.bootstrap-select .btn
+{
+    border: 1px solid #ced4da;
+}
+
 .api__big-tit {
 	font-size: 48px;
 	font-weight: 300;
