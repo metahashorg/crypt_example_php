@@ -8,9 +8,6 @@
 	<link rel="stylesheet" href="static/css/reset.css">
 	<link rel="stylesheet" href="static/css/bootstrap-select.css">
 	<link rel="stylesheet" href="static/css/main.css">
-	
-
-
 </head>
 <body>
 	<div class="container">
@@ -223,17 +220,21 @@
 				.on('click', '#createwallet_button', generate_address);
 		});
 
+		var config = {
+			net: 'test' // сеть
+		};
+
 		var update_address_list = function()
 		{
 			var query = {
 					method: 'get-list-address',
-					net: 'dev',
+					net: config.net,
 				};
 
 			$.ajax({
 				dataType: 'json',
 				method: 'GET',
-				url: '../crypt_example.php',
+				url: '/crypt.php',
 				data: query,
 				success: function(data)
 				{
@@ -256,7 +257,7 @@
 		{
 			var query = {
 					method: 'send-tx',
-					net: 'dev',
+					net: config.net,
 					address: $('#transactionform_address').val(),
 					to: $('#transactionform_to').val(),
 					value: $('#transactionform_value').val()*100000,
@@ -267,7 +268,7 @@
 			$.ajax({
 				dataType: 'json',
 				method: 'GET',
-				url: '../crypt_example.php',
+				url: '/crypt.php',
 				data: query,
 				success: function(data)
 				{
@@ -313,14 +314,14 @@
 
 			var query = {
 					method: 'get-tx',
-					net: 'dev',
+					net: config.net,
 					hash: tx,
 				};
 
 			$.ajax({
 				dataType: 'json',
 				method: 'GET',
-				url: '../crypt_example.php',
+				url: '/crypt.php',
 				data: query,
 				success: function(data)
 				{
@@ -375,13 +376,13 @@
 		{
 			var query = {
 					method: 'generate',
-					net: 'dev',
+					net: config.net,
 				};
 
 			$.ajax({
 				dataType: 'json',
 				method: 'GET',
-				url: '../crypt_example.php',
+				url: '/crypt.php',
 				data: query,
 				success: function(data)
 				{				
@@ -411,7 +412,7 @@
 			$.ajax({
 				dataType: 'json',
 				method: 'GET',
-				url: '../crypt_example.php',
+				url: '/crypt.php',
 				data: query,
 				success: function(data)
 				{
