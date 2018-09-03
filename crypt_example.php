@@ -1,4 +1,5 @@
 <?php
+define('MHCRYPTO', false);
 define('ROOT_DIR', __DIR__);
 define('DATA_DIR', ROOT_DIR.'/data');
 
@@ -14,19 +15,58 @@ if(floatval(phpversion()) < 7.1)
 
 if(extension_loaded('curl') == false)
 {
-	exit('php-curl extension not loaded');
+	exit('php-curl extension not loaded ');
 }
 
-if(extension_loaded('mhcrypto') == false)
+if(MHCRYPTO)
 {
-	throw new Exception('mhcrypto extension not loaded');
+	if(extension_loaded('mhcrypto') == false)
+	{
+		throw new Exception('mhcrypto extension not loaded');
+	}
 }
+else
+{
+	if(extension_loaded('gmp') == false)
+	{
+		exit('php-gmp extension not loaded ');
+	}
+
+	if(file_exists(ROOT_DIR.'/vendor/autoload.php') == false)
+	{
+		exit('`vendor/autoload.php` not found  in '.ROOT_DIR);
+	}
+
+	include_once 'vendor/autoload.php';
+
+	if(file_exists(ROOT_DIR.'/vendor/mdanter/ecc/src/EccFactory.php') == false)
+	{
+		exit('`mdanter/ecc` not found. Please run composer command `composer require mdanter/ecc:0.4.2`');
+	}
+}
+
+use Mdanter\Ecc\EccFactory;
+use Mdanter\Ecc\Crypto\Signature\Signer;
+use Mdanter\Ecc\Crypto\Signature\SignHasher;
+use Mdanter\Ecc\Serializer\PrivateKey\PemPrivateKeySerializer;
+use Mdanter\Ecc\Serializer\PrivateKey\DerPrivateKeySerializer;
+use Mdanter\Ecc\Serializer\PublicKey\PemPublicKeySerializer;
+use Mdanter\Ecc\Serializer\PublicKey\DerPublicKeySerializer;
+use Mdanter\Ecc\Serializer\Signature\DerSignatureSerializer;
+use Mdanter\Ecc\Random\RandomGeneratorFactory;
 
 class Ecdsa
 {
+	private $adapter;
+	private $generator;
+
 	public function __construct()
 	{
-		
+		if(!MHCRYPTO)
+		{
+			$this->adapter = EccFactory::getAdapter();
+			$this->generator = EccFactory::getSecgCurves()->generator256r1();
+		}
 	}
 
 	public function getKey()
@@ -37,11 +77,25 @@ class Ecdsa
 			'address' => null
 		];
 
-		mhcrypto_generate_wallet($result['private'], $result['public'], $result['address']);
-
-		foreach($result as &$val)
+		if(MHCRYPTO)
 		{
-			$val = $this->to_base16($val);
+			mhcrypto_generate_wallet($result['private'], $result['public'], $result['address']);
+			foreach($result as &$val)
+			{
+				$val = $this->to_base16($val);
+			}
+		}
+		else
+		{
+			$private = $this->generator->createPrivateKey();
+			$serializer_private = new DerPrivateKeySerializer($this->adapter);
+			$data_private = $serializer_private->serialize($private);
+			$result['private'] = '0x'.bin2hex($data_private);
+
+			$public = $private->getPublicKey();
+			$serializer_public = new DerPublicKeySerializer($this->adapter);
+			$data_public = $serializer_public->serialize($public);
+			$result['public'] = '0x'.bin2hex($data_public);
 		}
 
 		return $result;
@@ -49,30 +103,133 @@ class Ecdsa
 
 	public function privateToPublic($private_key)
 	{
-		$public_key = null;
-		mhcrypto_generate_public($private_key, $public_key);
-		$result = '0x'.$public_key;
+		$result = null;
+
+		if(MHCRYPTO)
+		{
+			$public_key = null;
+			mhcrypto_generate_public($private_key, $public_key);
+			$result = '0x'.$public_key;
+		}
+		else
+		{
+			$serializer_private = new DerPrivateKeySerializer($this->adapter);
+			$private_key = $this->parse_base16($private_key);
+			$private_key = hex2bin($private_key);
+			$key = $serializer_private->parse($private_key);
+
+			$public = $key->getPublicKey();
+			$serializer_public = new DerPublicKeySerializer($this->adapter);
+			$data_public = $serializer_public->serialize($public);
+			$result = '0x'.bin2hex($data_public);
+		}
 
 		return $result;
 	}
 
-	public function sign($data, $private_key)
+	public function sign($data, $private_key, $rand = false, $algo = 'sha256')
 	{
 		$sign = null;
-		mhcrypto_sign_text($sign, $private_key, $data);
+
+		if(MHCRYPTO)
+		{	
+			mhcrypto_sign_text($sign, $private_key, $data);
+		}
+		else
+		{
+			$serializer_private = new DerPrivateKeySerializer($this->adapter);
+			$private_key = $this->parse_base16($private_key);
+			$private_key = hex2bin($private_key);
+			$key = $serializer_private->parse($private_key);
+
+			$hasher = new SignHasher($algo, $this->adapter);
+			$hash = $hasher->makeHash($data, $this->generator);
+
+			if(!$rand)
+			{
+				$random = RandomGeneratorFactory::getHmacRandomGenerator($key, $hash, $algo);
+			}
+			else
+			{
+				$random = RandomGeneratorFactory::getRandomGenerator();
+			}
+
+			$randomK = $random->generate($this->generator->getOrder());
+			$signer = new Signer($this->adapter);
+			$signature = $signer->sign($key, $hash, $randomK);
+
+			$serializer = new DerSignatureSerializer();
+			$sign = $serializer->serialize($signature);
+		}
 
 		return '0x'.bin2hex($sign);
 	}
 
-	public function verify($sign, $data, $public_key)
+	public function verify($sign, $data, $public_key, $algo = 'sha256')
 	{
-		return mhcrypto_check_sign_text($this->hex2bin($sign), $public_key, $data);
+		$result = false;
+
+		if(MHCRYPTO)
+		{
+			$result = mhcrypto_check_sign_text($this->hex2bin($sign), $public_key, $data);
+		}
+		else
+		{
+			$serializer = new DerSignatureSerializer();
+			$serializer_public = new DerPublicKeySerializer($this->adapter);
+
+			$public_key = $this->parse_base16($public_key);
+			$public_key = hex2bin($public_key);
+			$key = $serializer_public->parse($public_key);
+
+			$hasher = new SignHasher($algo);
+			$hash = $hasher->makeHash($data, $this->generator);
+
+			$sign = $this->parse_base16($sign);
+			$sign = hex2bin($sign);
+			$serialized_sign = $serializer->parse($sign);
+			$signer = new Signer($this->adapter);
+			$check = $signer->verify($key, $serialized_sign, $hash);
+
+			$result = ($signer->verify($key, $serialized_sign, $hash))?true:false;
+		}
+
+		return $result;
 	}
 
-	public function getAdress($key)
+	public function getAdress($key, $net = '00')
 	{
 		$address = null;
-		mhcrypto_generate_address($key, $address);
+
+		if(MHCRYPTO)
+		{	
+			mhcrypto_generate_address($key, $address);
+		}
+		else
+		{
+			$code = '';
+
+			$serializer_public = new DerPublicKeySerializer($this->adapter);
+			$key = $this->parse_base16($key);
+			$key = hex2bin($key);
+			$key = $serializer_public->parse($key);
+			$x = gmp_strval($key->getPoint()->getX(), 16);
+			$xlen = 64 - strlen($x);
+			$x = ($xlen > 0)?str_repeat('0', $xlen).$x:$x;
+			$y = gmp_strval($key->getPoint()->getY(), 16);
+			$ylen = 64 - strlen($y);
+			$y = ($ylen > 0)?str_repeat('0', $ylen).$y:$y;
+
+			$code = '04'.$x.$y;
+			$code = hex2bin($code);
+			$code = hex2bin(hash('sha256', $code));
+			$code = $net.hash('ripemd160', $code);
+			$code = hex2bin($code);
+			$hash_summ = hex2bin(hash('sha256', $code));
+			$hash_summ = hash('sha256', $hash_summ);
+			$hash_summ = substr($hash_summ, 0, 8);
+			$address = bin2hex($code).$hash_summ;
+		}
 
 		return '0x'.$address;
 	}
@@ -81,7 +238,27 @@ class Ecdsa
 	{
 		if(!empty($address))
 		{
-			return mhcrypto_check_address($address);
+			if(MHCRYPTO)
+			{
+				return mhcrypto_check_address($address);
+			}
+			else
+			{
+				if(strlen($this->parse_base16($address))%2) return false;
+
+				$address_hash_summ = substr($address, strlen($address) - 8, 8);
+				$code = substr($address, 0, strlen($address) - 8);
+				$code = substr($code, 2);
+				$code = hex2bin($code);
+				$hash_summ = hex2bin(hash('sha256', $code));
+				$hash_summ = hash('sha256', $hash_summ);
+				$hash_summ = substr($hash_summ, 0, 8);
+				
+				if($address_hash_summ === $hash_summ)
+				{
+					return true;
+				}
+			}
 		}
 
 		return false;
@@ -363,6 +540,36 @@ class Crypto
 	public function checkAdress($address)
 	{
 		return $this->ecdsa->checkAdress($address);
+	}
+
+	public function create($address)
+	{
+		try
+		{
+			if($host = $this->getConnectionAddress('PROXY'))
+			{
+				$host = $host.'/?act=addWallet&p_addr='.$address;
+				$curl = $this->curl;
+				curl_setopt($curl, CURLOPT_URL, $host);
+				curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
+				curl_setopt($curl, CURLOPT_TIMEOUT, 2);
+				curl_setopt($curl, CURLOPT_POST, 1);
+				curl_setopt($curl, CURLOPT_HTTPGET, false);
+
+				$result = curl_exec($curl);
+				if(strstr($result, 'Transaction accapted.'))
+				{
+					return true;
+				}
+			}
+		}
+		catch(Exception $e)
+		{
+			// 
+		}
+
+		return false;
 	}
 
 	private function saveAddress($data = [])
@@ -714,6 +921,8 @@ try
 	$args['hash'] = isset($args['hash']) && !empty($args['hash'])?strtolower($args['hash']):null;
 	$args['to'] = isset($args['to']) && !empty($args['to'])?strtolower($args['to']):null;
 	$args['value'] = isset($args['value']) && !empty($args['value'])?number_format($args['value'], 0, '', ''):0;
+	$args['fee'] = '';//isset($args['fee']) && !empty($args['fee'])?number_format($args['fee'], 0, '', ''):0;
+	$args['data'] = '';//isset($args['data']) && !empty($args['data'])?$args['data']:null;
 	$args['nonce'] = isset($args['nonce']) && !empty($args['nonce'])?intval($args['nonce']):0;
 
 	if(empty($args['method']) || $args['method'] == null)
@@ -729,7 +938,10 @@ try
 	{
 		case 'generate':
 			//check_net_arg($args);
-			echo json_encode($crypto->generate());
+			$result = $crypto->generate();
+			$crypto->net = 'test';
+			$crypto->create($result['address']);
+			echo json_encode($result);
 		break;
 
 		case 'fetch-balance':
@@ -779,9 +991,9 @@ try
 			}
 
 			$nonce = $crypto->getNonce($args['address']);
-			$sign_text = $crypto->makeSign($args['to'], intval($args['value']), intval($nonce), 0, '', 0);
+			$sign_text = $crypto->makeSign($args['to'], strval($args['value']), strval($nonce), strval($args['fee']), $args['data']);
 			$sign = $crypto->sign($sign_text, $keys['private']);
-			$res = $crypto->sendTx($args['to'], $args['value'], '', $nonce, '', $keys['public'], $sign);
+			$res = $crypto->sendTx($args['to'], $args['value'], $args['fee'], $nonce, $args['data'], $keys['public'], $sign);
 
 			echo json_encode($res);
 		break;

@@ -117,13 +117,12 @@
 						<div class="row">
 							<div class="col-md-5 col-sm-12 api__devinf-block row1">data/[wallet address].mh</div>
 							<div class="col-md-7 col-sm-12 api__devinf-block row2">Keys files to sign #MetaHash transactions</div>
-							<div class="col-md-5 col-sm-12 api__devinf-block row1">crypt_example.php	</div>
-							<div class="col-md-7 col-sm-12 api__devinf-block row2">Connects to #MetaHash protocol with <code>mdanter/ecc</code></div>
-							<div class="col-md-5 col-sm-12 api__devinf-block row1">crypt_example_bin.php	</div>
-							<div class="col-md-7 col-sm-12 api__devinf-block row2">Connects to #MetaHash protocol with our driver for PHP <a href="https://github.com/metahashorg/php-mhcrypto" target="_blank">php-mhcrypto</a></div>
+							<div class="col-md-5 col-sm-12 api__devinf-block row1">crypt.php	</div>
+							<div class="col-md-7 col-sm-12 api__devinf-block row2">Connects to #MetaHash protocol</div>
+				
 							<div class="col-md-5 col-sm-12 api__devinf-block row1">README.md</div>
 							<div class="col-md-7 col-sm-12 api__devinf-block row2">Full API instructions</div>
-							<div class="col-md-5 col-sm-12 api__devinf-block row1">dev/transactions.php</div>
+							<div class="col-md-5 col-sm-12 api__devinf-block row1">index.html</div>
 							<div class="col-md-7 col-sm-12 api__devinf-block row2">Test-tool to send test transactions</div>
 						</div>
 					</div>
@@ -234,7 +233,7 @@
 			$.ajax({
 				dataType: 'json',
 				method: 'GET',
-				url: '/crypt.php',
+				url: '/crypt_example.php',
 				data: query,
 				success: function(data)
 				{
@@ -260,7 +259,7 @@
 					net: config.net,
 					address: $('#transactionform_address').val(),
 					to: $('#transactionform_to').val(),
-					value: $('#transactionform_value').val()*100000,
+					value: $('#transactionform_value').val()*1000000,
 					fee: 0,
 					data: '',
 				};
@@ -268,7 +267,7 @@
 			$.ajax({
 				dataType: 'json',
 				method: 'GET',
-				url: '/crypt.php',
+				url: '/crypt_example.php',
 				data: query,
 				success: function(data)
 				{
@@ -321,7 +320,7 @@
 			$.ajax({
 				dataType: 'json',
 				method: 'GET',
-				url: '/crypt.php',
+				url: '/crypt_example.php',
 				data: query,
 				success: function(data)
 				{
@@ -382,7 +381,7 @@
 			$.ajax({
 				dataType: 'json',
 				method: 'GET',
-				url: '/crypt.php',
+				url: '/crypt_example.php',
 				data: query,
 				success: function(data)
 				{				
@@ -390,6 +389,10 @@
 					$('#createwallet_success').show();
 					$('#transactionform_address').append('<option data-icon="api__option-color" data-subtext="0.000000 #MHC" id="option' + data.address + '">' + data.address + '</option>');
 					$('.selectpicker').selectpicker('refresh');
+					setTimeout(function(){
+						update_address_balance(data.address);
+						$('.selectpicker').selectpicker('refresh');
+					}, 3000);
 				},
 				error: function(data)
 				{
@@ -405,14 +408,14 @@
 
 			var query = {
 					method: 'fetch-balance',
-					net: 'dev',
+					net: config.net,
 					address: address
 				};
 
 			$.ajax({
 				dataType: 'json',
 				method: 'GET',
-				url: '/crypt.php',
+				url: '/crypt_example.php',
 				data: query,
 				success: function(data)
 				{
@@ -492,6 +495,7 @@
 			}
 			return s.join(dec);
 		}
+
 	</script>
 </body>
 </html>

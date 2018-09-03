@@ -1,42 +1,85 @@
 # Crypt example PHP
-This repository contains PHP scripts that enable to generate MetaHash addresses, check its balance and see the full transaction history. Besides, `crypt_example.php` and `crypt_example_bin.php` scripts describe methods allowing to create and send transactions as well as to obtain information on transaction via its hash. To learn more about all operations listed above please read the following articles: [Getting started with Metahash network](https://support.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network), [Creating transactions](https://support.metahash.org/hc/en-us/articles/360003271694-Creating-transactions) and [Operations with MetaHash address](https://support.metahash.org/hc/en-us/articles/360008382213-Operations-with-MetaHash-address). 
+This repository contains PHP scripts that enable to generate MetaHash addresses, check its balance and see the full transaction history. Besides, `crypt_example.php` script describe methods allowing to create and send transactions as well as to obtain information on transaction via its hash. To learn more about all operations listed above please read the following articles: [Getting started with Metahash network](https://support.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network), [Creating transactions](https://support.metahash.org/hc/en-us/articles/360003271694-Creating-transactions) and [Operations with MetaHash address](https://support.metahash.org/hc/en-us/articles/360008382213-Operations-with-MetaHash-address). 
 
-Script `crypt_example.php` works with `mdanter/ecc` library. Script `crypt_example_bin.php` is written using our driver for PHP [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto). 
+Существует 2 пути работы скрипта:
+1) C использованием расширения для php `mhcrypto`:
+	- высокая скорость работы (генерация ключей / адресов / подписей, валидация подписи)
+	- отсутствие дополнительных файлов в папке проекта
+2) С использованием php библиотеки `mdanter/ecc`
+	- 
+
+
+
 
 ## Requirements
 
-For `crypt_example.php`
+#### Base requirements
 - PHP 7.1+
-- composer
 - ext-gmp
 - ext-curl
-- mdanter/ecc
 
-For `crypt_example_bin.php`
-- PHP 7.1+
-- ext-curl
+#### Additional requirements for `mdanter/ecc` library
+
+- composer
+- mdanter/ecc (0.5.0)
+
+#### Additional requirements for `mhcrypto` extension
+
 - ext-mhcrypto (see [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto))
 
 ## Dependencies
 
-For `crypt_example.php`
-1) open the folder with `crypt_example.php` script
-2) install  `composer require mdanter/ecc:0.5.0`
-3) create the folder `data` and set Read and Write permissions (unix chmod 0777)
+For ubuntu 14.x 16.x 18.x follow these steps:
 
-For `crypt_example_bin.php`
-1) open the folder with `crypt_example_bin.php` script
-2) install `ext-mhcrypto`. For more details about installing `ext-mhcrypto`, please see [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto).
-3) create the folder `data` and set Read and Write permissions (unix chmod 0777)
+First of all you need to install php repository with php 7.x :
+
+1) Install add-apt-repository scripts and add repo
+```shell
+sudo apt-get install -y python-software-properties
+sudo add-apt-repository -y ppa:ondrej/php
+sudo apt-get update -y
+```
+
+2) Install php-7.2 with needed mondules
+```shell
+sudo apt-get install php7.2-cli php7.2-curl php7.2-dev php7.2-gmp
+```
+
+3) Install composer
+```shell
+sudo apt-get install composer
+```
+4) Install mdanter/ecc with composer
+```shell
+composer require mdanter/ecc:0.5.0
+```
+
+Sample output:
+```shell
+Using version 0.5.0 for mdanter/ecc
+./composer.json has been created
+Loading composer repositories with package information
+Updating dependencies (including require-dev)
+  - Installing fgrosse/phpasn1 (2.0.1)
+    Downloading: 100%
+
+  - Installing mdanter/ecc (v0.5.0)
+    Downloading: 100%
+
+fgrosse/phpasn1 suggests installing php-curl (For loading OID information from the web if they have not bee defined statically)
+
+mdander/ecc will be install in vendor/ folder in current directory
+```
+
+5) Install `ext-mhcrypto` For more details about installing `ext-mhcrypto`, please see [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto).
+
+6) Create the folder `data` and set Read and Write permissions (unix chmod 0777)
+
 
 ## Usage
 
 ```shell
 php crypt_example.php [params]
-```
-
-```shell
-php crypt_example_bin.php [params]
 ```
 
 ## List of methods
