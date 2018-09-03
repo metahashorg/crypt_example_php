@@ -1,20 +1,20 @@
 # Crypt example PHP
-This repository contains PHP scripts that enable to generate MetaHash addresses, check its balance and see the full transaction history. Besides, `crypt_example.php` script describe methods allowing to create and send transactions as well as to obtain information on transaction via its hash. To learn more about all operations listed above please read the following articles: [Getting started with Metahash network](https://support.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network), [Creating transactions](https://support.metahash.org/hc/en-us/articles/360003271694-Creating-transactions) and [Operations with MetaHash address](https://support.metahash.org/hc/en-us/articles/360008382213-Operations-with-MetaHash-address). 
+This repository contains PHP scripts that enable to generate MetaHash addresses, check its balance and see the full transaction history. Besides, `crypt_example.php` script describes methods allowing to create and send transactions as well as to obtain information on transaction via its hash. To learn more about all operations listed above please read the following articles: [Getting started with Metahash network](https://support.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network), [Creating transactions](https://support.metahash.org/hc/en-us/articles/360003271694-Creating-transactions) and [Operations with MetaHash address](https://support.metahash.org/hc/en-us/articles/360008382213-Operations-with-MetaHash-address). 
 
-There are 2 ways to work the script:
-1) C using the extension for php `mhcrypto`:
-- high speed of work (generation of keys / addresses / signatures, signature validation);
+There are 2 ways of working with the script:
+1) Using the extension for php `mhcrypto`:
+- high speed of working (generation of keys / addresses / signatures, signature validation);
 - no additional files in the project folder;
-- requires additional steps to install and configure the extension.
-2) Using the php library of `mdanter / ecc`:
+- requiring additional steps to install and configure the extension.
+2) Using the php library of `mdanter/ecc`:
 - simple installation;
-- the presence of additional files in the project folder.
+- additional files in the project folder.
 
 You can use the path that suits you.
 
 ## Requirements
 
-#### Base requirements
+#### Basic requirements
 - PHP 7.1+
 - ext-gmp
 - ext-curl
