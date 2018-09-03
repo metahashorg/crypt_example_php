@@ -77,6 +77,7 @@ sudo apt-get install php7.2-cli php7.2-curl php7.2-dev php7.2-gmp
 4) For `mhcrypto` extension 
 
 	a) Install `ext-mhcrypto`. For more details about installing `ext-mhcrypto`, please see [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto).
+	b) In the file `crypt_example.php`, set the value of the constant `MHCRYPTO` to `true`.
 
 5) Create the folder `data` and set Read and Write permissions (unix chmod 0777)
 
