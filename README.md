@@ -28,5 +28,6 @@ You can use the path that suits you.
 php crypt_example.php [params]
 ```
 
-##API
+## API
+
 [Read more](https://github.com/metahashorg/crypt_example_php/wiki/API)
