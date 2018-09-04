@@ -16,10 +16,20 @@
 		<h5>Developers API for #MHC transactions in #MetaHash network</h5>
 
 		<form id="transactionform" class="mt-5">
-			<h3>
+			<div class="dropdown float-right ">
+				<a id="network-title" class="btn dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-net="dev">
+					Current network: <span>dev</span>
+				</a>
+				<div id="network-select" class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+					<a class="dropdown-item" data-net="dev">dev</a>
+					<a class="dropdown-item" data-net="test">test</a>
+					<a class="dropdown-item" data-net="main">main</a>
+				</div>
+			</div>			
+			<h2>
 				Send transations to #MetaHash
-			</h3>
-			<div class="row">
+			</h2>
+			<div class="row mt-3">
 				<div class="col-sm-12 col-md-3">
 					<div class="form-group">
 						<label for="transactionform_value">#MHC value to send:</label>
@@ -227,6 +237,7 @@
 			update_address_list();
 
 			$('body')
+				.on('click', '#network-select a', update_address_list)
 				.on('submit', '#transactionform', send_transaction)
 				.on('click', '#transactionlogs_copy', copy_logs)
 				.on('click', '#transactionlogs_clear', clear_logs)
@@ -239,6 +250,14 @@
 
 		var update_address_list = function()
 		{
+			if($(this)[0].tagName=='A')
+			{
+				config.net = $(this).data('net');
+				$('#network-title')
+					.data('net', config.net)
+					.find('span').html(config.net);
+			}
+
 			var query = {
 					method: 'get-list-address',
 					net: config.net,
@@ -265,7 +284,6 @@
 					console.log('ajax error',data);
 				}
 			});
-			return false;
 		}
 
 		var send_transaction = function()
