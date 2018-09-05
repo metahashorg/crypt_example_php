@@ -1,48 +1,43 @@
 <?php
-define('MHCRYPTO', false);
-define('ROOT_DIR', __DIR__);
-define('DATA_DIR', ROOT_DIR.'/data');
-
-if(file_exists(DATA_DIR) == false)
+try
 {
-	exit('`data` directory not found in '.ROOT_DIR);
-}
+	define('MHCRYPTO', false);
+	define('ROOT_DIR', __DIR__);
+	define('DATA_DIR', ROOT_DIR.'/data');
 
-if(floatval(phpversion()) < 7.1)
-{
-	exit('requirements PHP 7.1+, current '.phpversion());
-}
+	if(file_exists(DATA_DIR) == false)
+		throw new Exception('`data` directory not found in '.ROOT_DIR);
 
-if(extension_loaded('curl') == false)
-{
-	exit('php-curl extension not loaded ');
-}
+	if(floatval(phpversion()) < 7.1)
+		throw new Exception('requirements PHP 7.1+, current '.phpversion());
 
-if(MHCRYPTO)
-{
-	if(extension_loaded('mhcrypto') == false)
+	if(extension_loaded('curl') == false)
+		throw new Exception('php-curl extension not loaded ');
+
+	if(MHCRYPTO)
 	{
-		throw new Exception('mhcrypto extension not loaded');
+		if(extension_loaded('mhcrypto') == false)
+			throw new Exception('mhcrypto extension not loaded');
+	}
+	else
+	{
+		if(extension_loaded('gmp') == false)
+			throw new Exception('php-gmp extension not loaded ');
+
+		if(file_exists(ROOT_DIR.'/vendor/autoload.php') == false)
+			throw new Exception('`vendor/autoload.php` not found  in '.ROOT_DIR);
+
+		include_once 'vendor/autoload.php';
+
+		if(file_exists(ROOT_DIR.'/vendor/mdanter/ecc/src/EccFactory.php') == false)
+			throw new Exception('`mdanter/ecc` not found. Please run composer command `composer require mdanter/ecc:0.4.2`');
 	}
 }
-else
+catch(Exception $e)
 {
-	if(extension_loaded('gmp') == false)
-	{
-		exit('php-gmp extension not loaded ');
-	}
-
-	if(file_exists(ROOT_DIR.'/vendor/autoload.php') == false)
-	{
-		exit('`vendor/autoload.php` not found  in '.ROOT_DIR);
-	}
-
-	include_once 'vendor/autoload.php';
-
-	if(file_exists(ROOT_DIR.'/vendor/mdanter/ecc/src/EccFactory.php') == false)
-	{
-		exit('`mdanter/ecc` not found. Please run composer command `composer require mdanter/ecc:0.4.2`');
-	}
+	echo json_encode(['error' => true, 'message' => $e->getMessage()]);
+	echo PHP_EOL;
+	die();
 }
 
 use Mdanter\Ecc\EccFactory;
@@ -514,8 +509,8 @@ class Crypto
 	public $net = null;
 
 	private $curl = null;
-	private const PROXY = ['url' => 'proxy.net-%s.metahash.org', 'port' => 9999];
-	private const TORRENT = ['url' => 'tor.net-%s.metahash.org', 'port' => 5795];
+	private $proxy = ['url' => 'proxy.net-%s.metahash.org', 'port' => 9999];
+	private $torrent = ['url' => 'tor.net-%s.metahash.org', 'port' => 5795];
 	private $hosts = [];
 	
 	public function __construct($ecdsa)
@@ -706,12 +701,12 @@ class Crypto
 			switch($node)
 			{
 				case 'PROXY':
-					$node_url = sprintf(self::PROXY['url'], $this->net);
-					$node_port = self::PROXY['port'];
+					$node_url = sprintf($this->proxy['url'], $this->net);
+					$node_port = $this->proxy['port'];
 				break;
 				case 'TORRENT':
-					$node_url = sprintf(self::TORRENT['url'], $this->net);
-					$node_port = self::TORRENT['port'];
+					$node_url = sprintf($this->torrent['url'], $this->net);
+					$node_port = $this->torrent['port'];
 				break;
 				default:
 					// empty
