@@ -250,6 +250,9 @@
 
 		var update_address_list = function()
 		{
+			$('#transactionform_address').html('');
+			$('.selectpicker').selectpicker('refresh');
+			
 			if($(this)[0].tagName=='A')
 			{
 				config.net = $(this).data('net');
