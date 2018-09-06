@@ -30,6 +30,8 @@ You can use the path that suits you.
 php crypt_example.php [params]
 ```
 
+Repository contains demo page `index.html`. In order to work with this demo page you need to have an installed web server.
+
 ## API
 
 [Read more](https://github.com/metahashorg/crypt_example_php/wiki/API)
