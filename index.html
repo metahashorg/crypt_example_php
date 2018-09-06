@@ -252,7 +252,7 @@
 		{
 			$('#transactionform_address').html('');
 			$('.selectpicker').selectpicker('refresh');
-			
+
 			if($(this)[0].tagName=='A')
 			{
 				config.net = $(this).data('net');
@@ -285,6 +285,7 @@
 				error: function(data)
 				{
 					console.log('ajax error',data);
+					show_error('get-list-address: network error<br>Make sure that you open this page from your web server' );
 				}
 			});
 		}
@@ -339,7 +340,7 @@
 				error: function(data)
 				{
 					console.log('ajax error',data);
-					show_error('send-tx: network error');
+					show_error('send-tx: network error<br>Make sure that you open this page from your web server');
 				}
 			});
 
@@ -440,7 +441,7 @@
 				error: function(data)
 				{
 					console.log('ajax error',data);
-					show_error('generate: network error');
+					show_error('generate: network error<br>Make sure that you open this page from your web server');
 				}
 			});
 		}
@@ -472,7 +473,7 @@
 				error: function(data)
 				{
 					console.log('ajax error',data);
-					show_error('fetch-balance: network error');
+					show_error('fetch-balance: network error<br>Make sure that you open this page from your web server');
 				}
 			});
 		}
