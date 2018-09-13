@@ -917,7 +917,7 @@ try
 	$args['to'] = isset($args['to']) && !empty($args['to'])?strtolower($args['to']):null;
 	$args['value'] = isset($args['value']) && !empty($args['value'])?number_format($args['value'], 0, '', ''):0;
 	$args['fee'] = '';//isset($args['fee']) && !empty($args['fee'])?number_format($args['fee'], 0, '', ''):0;
-	$args['data'] = '';//isset($args['data']) && !empty($args['data'])?$args['data']:null;
+	$args['data'] = isset($args['data']) && !empty($args['data'])?$args['data']:'';
 	$args['nonce'] = isset($args['nonce']) && !empty($args['nonce'])?intval($args['nonce']):0;
 
 	if(empty($args['method']) || $args['method'] == null)

@@ -44,8 +44,8 @@
 				</div>
 				<div class="col-sm-12 col-md-6">
 					<div class="form-group">
-						<label for="transactionform_value">Transaction data:</label>
-						<input type="text" class="form-control form-control-lg" id="transactionform_value"  value="" disabled>
+						<label for="transactionform_data">Transaction data:</label>
+						<input type="text" class="form-control form-control-lg" id="transactionform_data"  value="">
 					</div>
 				</div>
 			</div>
@@ -299,7 +299,7 @@
 					to: $('#transactionform_to').val(),
 					value: $('#transactionform_value').val()*1000000,
 					fee: 0,
-					data: '',
+					data: $('#transactionform_data').val(),
 				};
 
 			$.ajax({
