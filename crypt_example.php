@@ -103,8 +103,8 @@ class Ecdsa
 		if(MHCRYPTO)
 		{
 			$public_key = null;
-			mhcrypto_generate_public($private_key, $public_key);
-			$result = '0x'.$public_key;
+			mhcrypto_generate_public($this->parse_base16($private_key), $public_key);
+			$result = $this->to_base16($public_key);
 		}
 		else
 		{
@@ -128,7 +128,7 @@ class Ecdsa
 
 		if(MHCRYPTO)
 		{	
-			mhcrypto_sign_text($sign, $private_key, $data);
+			mhcrypto_sign_text($sign, $this->parse_base16($private_key), $data);
 		}
 		else
 		{
@@ -166,7 +166,7 @@ class Ecdsa
 
 		if(MHCRYPTO)
 		{
-			$result = mhcrypto_check_sign_text($this->hex2bin($sign), $public_key, $data);
+			$result = mhcrypto_check_sign_text($this->hex2bin($sign), $this->parse_base16($public_key), $data);
 		}
 		else
 		{
@@ -226,7 +226,7 @@ class Ecdsa
 			$address = bin2hex($code).$hash_summ;
 		}
 
-		return '0x'.$address;
+		return $this->to_base16($address);
 	}
 
 	public function checkAdress($address)
@@ -235,7 +235,7 @@ class Ecdsa
 		{
 			if(MHCRYPTO)
 			{
-				return mhcrypto_check_address($address);
+				return mhcrypto_check_address($this->parse_base16($address));
 			}
 			else
 			{
