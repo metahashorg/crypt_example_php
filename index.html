@@ -44,8 +44,8 @@
 				</div>
 				<div class="col-sm-12 col-md-6">
 					<div class="form-group">
-						<label for="transactionform_value">Transaction data:</label>
-						<input type="text" class="form-control form-control-lg" id="transactionform_value"  value="" disabled>
+						<label for="transactionform_data">Transaction data:</label>
+						<input type="text" class="form-control form-control-lg" id="transactionform_data"  value="">
 					</div>
 				</div>
 			</div>
@@ -72,7 +72,14 @@
 				<div class="col-sm-12 col-md-4">
 					<div class="form-group">
 						<label for="">&nbsp;</label>
-						<button class="btn btn-primary form-control form-control-lg">Send transaction</button>
+						<button class="btn btn-primary form-control form-control-lg" id="btn-send-tx">
+							<span class="spinner_reason">Send transaction</span>
+							<div class="spinner">
+								<div class="bounce1"></div>
+								<div class="bounce2"></div>
+								<div class="bounce3"></div>
+							</div>
+						</button>
 					</div>
 				</div>
 			</div>
@@ -181,7 +188,14 @@
 				<div class="col-lg-5 col-md-5">
 					<div class="form-group">
 						<label for="createwallet_button">Wallet keyfile will be stored in <code>data/</code></label>
-						<button class="btn btn-primary form-control form-control-lg" id="createwallet_button">Create wallet</button>
+						<button class="btn btn-primary form-control form-control-lg" id="createwallet_button">
+							<span class="spinner_reason">Create wallet</span>
+							<div class="spinner">
+								<div class="bounce1"></div>
+								<div class="bounce2"></div>
+								<div class="bounce3"></div>
+							</div>
+						</button>
 					</div>
 				</div>
 				<div class="col-lg-7 col-md-7">
@@ -244,12 +258,26 @@
 				.on('click', '#createwallet_button', generate_address);
 		});
 
+		function show_spinner(selector)
+		{
+			$(selector + ' .spinner_reason').hide();
+			$(selector + ' .spinner').addClass('active');
+		}
+		function hide_spinner(selector)
+		{
+			$(selector + ' .spinner_reason').show();
+			$(selector + ' .spinner').removeClass('active');
+		}
+
 		var config = {
 			net: 'dev'
 		};
 
 		var update_address_list = function()
 		{
+			$('#transactionform_address').html('');
+			$('.selectpicker').selectpicker('refresh');
+
 			if($(this)[0].tagName=='A')
 			{
 				config.net = $(this).data('net');
@@ -282,6 +310,7 @@
 				error: function(data)
 				{
 					console.log('ajax error',data);
+					show_error('get-list-address: network error<br>Make sure that you open this page from your web server' );
 				}
 			});
 		}
@@ -295,8 +324,10 @@
 					to: $('#transactionform_to').val(),
 					value: $('#transactionform_value').val()*1000000,
 					fee: 0,
-					data: '',
+					data: $('#transactionform_data').val(),
 				};
+
+			show_spinner('#btn-send-tx');
 
 			$.ajax({
 				dataType: 'json',
@@ -305,6 +336,7 @@
 				data: query,
 				success: function(data)
 				{
+					hide_spinner('#btn-send-tx');
 					if(data.error == true)
 						return show_error(data.message);
 					if(data.params)
@@ -335,8 +367,9 @@
 				},
 				error: function(data)
 				{
+					hide_spinner('#btn-send-tx');
 					console.log('ajax error',data);
-					show_error('send-tx: network error');
+					show_error('send-tx: network error<br>Make sure that you open this page from your web server');
 				}
 			});
 
@@ -416,6 +449,8 @@
 					net: config.net,
 				};
 
+			show_spinner('#createwallet_button');
+
 			$.ajax({
 				dataType: 'json',
 				method: 'GET',
@@ -423,6 +458,8 @@
 				data: query,
 				success: function(data)
 				{	
+					hide_spinner('#createwallet_button');
+
 					if(data.error == true)
 						return show_error(data.message);			
 					$('#createwallet_input').val(data.address);
@@ -436,8 +473,9 @@
 				},
 				error: function(data)
 				{
+					hide_spinner('#createwallet_button');
 					console.log('ajax error',data);
-					show_error('generate: network error');
+					show_error('generate: network error<br>Make sure that you open this page from your web server');
 				}
 			});
 		}
@@ -469,7 +507,7 @@
 				error: function(data)
 				{
 					console.log('ajax error',data);
-					show_error('fetch-balance: network error');
+					show_error('fetch-balance: network error<br>Make sure that you open this page from your web server');
 				}
 			});
 		}

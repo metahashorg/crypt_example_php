@@ -103,8 +103,8 @@ class Ecdsa
 		if(MHCRYPTO)
 		{
 			$public_key = null;
-			mhcrypto_generate_public($private_key, $public_key);
-			$result = '0x'.$public_key;
+			mhcrypto_generate_public($this->parse_base16($private_key), $public_key);
+			$result = $this->to_base16($public_key);
 		}
 		else
 		{
@@ -128,7 +128,7 @@ class Ecdsa
 
 		if(MHCRYPTO)
 		{	
-			mhcrypto_sign_text($sign, $private_key, $data);
+			mhcrypto_sign_text($sign, $this->parse_base16($private_key), $data);
 		}
 		else
 		{
@@ -166,7 +166,7 @@ class Ecdsa
 
 		if(MHCRYPTO)
 		{
-			$result = mhcrypto_check_sign_text($this->hex2bin($sign), $public_key, $data);
+			$result = mhcrypto_check_sign_text($this->hex2bin($sign), $this->parse_base16($public_key), $data);
 		}
 		else
 		{
@@ -226,7 +226,7 @@ class Ecdsa
 			$address = bin2hex($code).$hash_summ;
 		}
 
-		return '0x'.$address;
+		return $this->to_base16($address);
 	}
 
 	public function checkAdress($address)
@@ -235,7 +235,7 @@ class Ecdsa
 		{
 			if(MHCRYPTO)
 			{
-				return mhcrypto_check_address($address);
+				return mhcrypto_check_address($this->parse_base16($address));
 			}
 			else
 			{
@@ -502,6 +502,16 @@ function debug($data)
 	echo '<pre>'; print_r($data); echo '</pre>';
 }
 
+function str2hex($string)
+{
+	return implode(unpack("H*", $string));
+}
+
+function hex2str($hex)
+{
+	return pack("H*", $hex);
+}
+
 class Crypto
 {
 	private $ecdsa = null;
@@ -716,17 +726,59 @@ class Crypto
 			if($node_url)
 			{
 				$list = dns_get_record($node_url, DNS_A);
+				$host_list = [];
 				foreach($list as $val)
 				{
-					if($res = $this->checkHost($val['ip'].':'.$node_port))
+					switch($node)
 					{
-						return $val['ip'].':'.$node_port;
+						case 'PROXY':
+							if($res = $this->checkHost($val['ip'].':'.$node_port))
+							{
+								$host_list[$val['ip'].':'.$node_port] = 1;
+							}
+						break;
+						case 'TORRENT':
+							$host_list[$val['ip'].':'.$node_port] = $this->torGetLastBlock($val['ip'].':'.$node_port);
+						break;
+						default:
+							// empty
+						break;
 					}
+				}
+
+				arsort($host_list);
+				$keys = array_keys($host_list);
+				if(count($keys))
+				{
+					return $keys[0];
 				}
 			}
 		}
 
 		return false;
+	}
+
+	private function torGetLastBlock($host)
+	{
+		if(!empty($host))
+		{
+			$curl = $this->curl;
+			curl_setopt($curl, CURLOPT_URL, $host); 
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
+			curl_setopt($curl, CURLOPT_TIMEOUT, 1);
+			curl_setopt($curl, CURLOPT_POST, 1);
+			curl_setopt($curl, CURLOPT_POSTFIELDS, '{"id":"1","method":"get-count-blocks","params":[]}');
+			$res = curl_exec($curl);
+			$res = json_decode($res, true);
+			
+			if(isset($res['result']['count_blocks']))
+			{
+				return intval($res['result']['count_blocks']);
+			}
+		}
+
+		return 0;
 	}
 
 	private function checkHost($host)
@@ -917,7 +969,7 @@ try
 	$args['to'] = isset($args['to']) && !empty($args['to'])?strtolower($args['to']):null;
 	$args['value'] = isset($args['value']) && !empty($args['value'])?number_format($args['value'], 0, '', ''):0;
 	$args['fee'] = '';//isset($args['fee']) && !empty($args['fee'])?number_format($args['fee'], 0, '', ''):0;
-	$args['data'] = '';//isset($args['data']) && !empty($args['data'])?$args['data']:null;
+	$args['data'] = isset($args['data']) && !empty($args['data'])?trim($args['data']):'';
 	$args['nonce'] = isset($args['nonce']) && !empty($args['nonce'])?intval($args['nonce']):0;
 
 	if(empty($args['method']) || $args['method'] == null)
@@ -986,6 +1038,21 @@ try
 			}
 
 			$nonce = $crypto->getNonce($args['address']);
+
+			if($crypto->net == 'test')
+			{
+				$data_len = strlen($args['data']);
+				if($data_len > 0)
+				{
+					$args['fee'] = $data_len;
+					$args['data'] = str2hex($args['data']);
+				}
+			}
+			else
+			{
+				$args['data'] = '';
+			}
+
 			$sign_text = $crypto->makeSign($args['to'], strval($args['value']), strval($nonce), strval($args['fee']), $args['data']);
 			$sign = $crypto->sign($sign_text, $keys['private']);
 			$res = $crypto->sendTx($args['to'], $args['value'], $args['fee'], $nonce, $args['data'], $keys['public'], $sign);

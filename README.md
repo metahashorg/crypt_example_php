@@ -1,5 +1,5 @@
 # Crypt example PHP
-This repository contains PHP scripts that enable to generate MetaHash addresses, check its balance and see the full transaction history. Besides, `crypt_example.php` script describes methods allowing to create and send transactions as well as to obtain information on transaction via its hash. To learn more about all operations listed above please read the following articles: [Getting started with Metahash network](https://support.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network), [Creating transactions](https://support.metahash.org/hc/en-us/articles/360003271694-Creating-transactions) and [Operations with MetaHash address](https://support.metahash.org/hc/en-us/articles/360008382213-Operations-with-MetaHash-address). 
+This repository contains PHP scripts that enable to generate MetaHash addresses, check its balance and see the full transaction history. Besides, `crypt_example.php` script describes methods allowing to create and send transactions as well as to obtain information on transaction via its hash. To learn more about all operations listed above please read the following articles: [Getting started with Metahash network](https://developers.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network), [Creating transactions](https://developers.metahash.org/hc/en-us/articles/360003271694-Creating-transactions) and [Operations with MetaHash address](https://developers.metahash.org/hc/en-us/articles/360008382213-Operations-with-MetaHash-address). 
 
 There are 2 ways of working with the script:
 
@@ -30,7 +30,7 @@ You can use the path that suits you.
 php crypt_example.php [params]
 ```
 
-Repository contains demo page `index.html`. In order to work with this demo page you need to have an installed web server.
+Repository contains demo page `index.html`. In order to work with this demo page you need to have an installed web server. Here you can see the demo page of interface crypt_example_php: [http://172.104.139.177/](http://172.104.139.177/)
 
 ## API
 
