@@ -3,8 +3,8 @@ This repository contains PHP scripts that enable to generate MetaHash addresses,
 
 There are 2 ways of working with the script:
 
-1) Using the php library of `mdanter/ecc` [Read more](https://github.com/metahashorg/crypt_example_php/wiki/Using-the-php-library)
-2) Using the extension for php `mhcrypto` [Read more](https://github.com/metahashorg/crypt_example_php/wiki/Using-the-extension-for-php)
+1) Using the extension for php `mhcrypto` [Read more](https://github.com/metahashorg/crypt_example_php/wiki/Using-the-extension-for-php)
+2) Using the php library of `mdanter/ecc` [Read more](https://github.com/metahashorg/crypt_example_php/wiki/Using-the-php-library)
 
 You can use the path that suits you.
 
@@ -15,14 +15,15 @@ You can use the path that suits you.
 - ext-gmp
 - ext-curl
 
+#### Additional requirements for `mhcrypto` extension
+
+- ext-mhcrypto (see [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto))
+
 #### Additional requirements for `mdanter/ecc` library
 
 - composer
 - mdanter/ecc (0.5.0)
 
-#### Additional requirements for `mhcrypto` extension
-
-- ext-mhcrypto (see [https://github.com/metahashorg/php-mhcrypto](https://github.com/metahashorg/php-mhcrypto))
 
 ## Usage
 
