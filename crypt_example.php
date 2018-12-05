@@ -1039,7 +1039,7 @@ try
 
 			$nonce = $crypto->getNonce($args['address']);
 
-			if($crypto->net == 'test')
+			if($crypto->net != 'main')
 			{
 				$data_len = strlen($args['data']);
 				if($data_len > 0)

@@ -256,6 +256,7 @@
 				.on('click', '#transactionlogs_copy', copy_logs)
 				.on('click', '#transactionlogs_clear', clear_logs)
 				.on('click', '#createwallet_button', generate_address);
+			$('#transactionform_data').on('input', calc_fee);
 		});
 
 		function show_spinner(selector)
@@ -272,6 +273,11 @@
 		var config = {
 			net: 'dev'
 		};
+
+		var calc_fee = function()
+		{
+			$('#transactionform_fee').val(($(this).val().length * 1));
+		}
 
 		var update_address_list = function()
 		{
