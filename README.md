@@ -31,7 +31,7 @@ You can use the path that suits you.
 php crypt_example.php [params]
 ```
 
-Repository contains demo page `index.html`. In order to work with this demo page you need to have an installed web server. Here you can see the demo page of interface crypt_example_php: [http://172.104.139.177/](http://172.104.139.177/)
+Repository contains demo page `index.html`. In order to work with this demo page you need to have an installed web server.
 
 ## API
 
