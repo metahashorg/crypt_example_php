@@ -1039,19 +1039,19 @@ try
 
 			$nonce = $crypto->getNonce($args['address']);
 
-			if($crypto->net != 'main')
-			{
+			// if($crypto->net != 'main')
+			// {
 				$data_len = strlen($args['data']);
 				if($data_len > 0)
 				{
 					$args['fee'] = $data_len;
 					$args['data'] = str2hex($args['data']);
 				}
-			}
-			else
-			{
-				$args['data'] = '';
-			}
+			// }
+			// else
+			// {
+			// 	$args['data'] = '';
+			// }
 
 			$sign_text = $crypto->makeSign($args['to'], strval($args['value']), strval($nonce), strval($args['fee']), $args['data']);
 			$sign = $crypto->sign($sign_text, $keys['private']);
