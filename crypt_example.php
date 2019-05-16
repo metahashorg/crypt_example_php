@@ -519,8 +519,8 @@ class Crypto
 	public $net = null;
 
 	private $curl = null;
-	private $proxy = ['url' => 'proxy.net-%s.metahash.org', 'port' => 9999];
-	private $torrent = ['url' => 'tor.net-%s.metahash.org', 'port' => 5795];
+	private $proxy = ['url' => 'proxy.net-%s.metahashnetwork.com', 'port' => 9999];
+	private $torrent = ['url' => 'tor.net-%s.metahashnetwork.com', 'port' => 5795];
 	private $hosts = [];
 	
 	public function __construct($ecdsa)
