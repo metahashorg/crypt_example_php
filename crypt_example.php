@@ -60,7 +60,7 @@ class Ecdsa
 		if(!MHCRYPTO)
 		{
 			$this->adapter = EccFactory::getAdapter();
-			$this->generator = EccFactory::getSecgCurves()->generator256r1();
+			$this->generator = EccFactory::getSecgCurves()->generator256k1();
 		}
 	}
 
