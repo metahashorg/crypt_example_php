@@ -127,7 +127,7 @@ class Ecdsa
 		$sign = null;
 
 		if(MHCRYPTO)
-		{	
+		{
 			mhcrypto_sign_text($sign, $this->parse_base16($private_key), $data);
 		}
 		else
@@ -197,7 +197,7 @@ class Ecdsa
 		$address = null;
 
 		if(MHCRYPTO)
-		{	
+		{
 			mhcrypto_generate_address($key, $address);
 		}
 		else
@@ -248,7 +248,7 @@ class Ecdsa
 				$hash_summ = hex2bin(hash('sha256', $code));
 				$hash_summ = hash('sha256', $hash_summ);
 				$hash_summ = substr($hash_summ, 0, 8);
-				
+
 				if($address_hash_summ === $hash_summ)
 				{
 					return true;
@@ -295,15 +295,15 @@ class IntHelper
 		$f = is_int($i)?'Pack':'UnPack';
 
 		if($endianness === true) // big-endian
-		{  
+		{
 			$i = self::$f('n', $i, $hex);
 		}
-		elseif($endianness === false) // little-endian 
-		{  
+		elseif($endianness === false) // little-endian
+		{
 			$i = self::$f('v', $i, $hex);
 		}
 		elseif($endianness === null) // machine byte order
-		{  
+		{
 			$i = self::$f('S', $i, $hex);
 		}
 
@@ -324,7 +324,7 @@ class IntHelper
 			$i = self::$f('N', $i, $hex);
 		}
 		else if ($endianness === false) // little-endian
-		{  
+		{
 			$i = self::$f('V', $i, $hex);
 		}
 		else if ($endianness === null) // machine byte order
@@ -349,7 +349,7 @@ class IntHelper
 			$i = self::$f('J', $i, $hex);
 		}
 		else if ($endianness === false) // little-endian
-		{  
+		{
 			$i = self::$f('P', $i, $hex);
 		}
 		else if ($endianness === null) // machine byte order
@@ -522,7 +522,7 @@ class Crypto
 	private $proxy = ['url' => 'proxy.net-%s.metahashnetwork.com', 'port' => 9999];
 	private $torrent = ['url' => 'tor.net-%s.metahashnetwork.com', 'port' => 5795];
 	private $hosts = [];
-	
+
 	public function __construct($ecdsa)
 	{
 		$this->ecdsa = $ecdsa;
@@ -571,7 +571,7 @@ class Crypto
 		}
 		catch(Exception $e)
 		{
-			// 
+			//
 		}
 
 		return false;
@@ -602,11 +602,11 @@ class Crypto
 				{
 					return [
 						'private' => $data[0],
-						'public' => $data[1], 
+						'public' => $data[1],
 						'address' => $data[2]
 					];
 				}
-				
+
 				fclose($fp);
 			}
 		}
@@ -673,7 +673,7 @@ class Crypto
 		$b = IntHelper::VarUInt(intval($value), true); // сумма
 		$c = IntHelper::VarUInt(intval($fee), true); // комиссия
 		$d = IntHelper::VarUInt(intval($nonce), true); // нонс
-		
+
 		$f = $data; // дата
 		$data_length = strlen($f);
 		$data_length = ($data_length > 0)?$data_length / 2:0;
@@ -688,7 +688,7 @@ class Crypto
 			echo '<h3>Sign Data</h3>';
 			var_dump($sign_text);
 		}
-		
+
 		return hex2bin($sign_text);
 	}
 
@@ -698,7 +698,7 @@ class Crypto
 	}
 
 	public function getConnectionAddress($node = null)
-	{	
+	{
 		if(isset($this->hosts[$node]) && !empty($this->hosts[$node]))
 		{
 			return $this->hosts[$node];
@@ -707,7 +707,7 @@ class Crypto
 		{
 			$node_url = null;
 			$node_port = null;
-			
+
 			switch($node)
 			{
 				case 'PROXY':
@@ -750,7 +750,8 @@ class Crypto
 				$keys = array_keys($host_list);
 				if(count($keys))
 				{
-					return $keys[0];
+                    $this->hosts[$node] = $keys[0];
+                    return $this->hosts[$node];
 				}
 			}
 		}
@@ -763,7 +764,7 @@ class Crypto
 		if(!empty($host))
 		{
 			$curl = $this->curl;
-			curl_setopt($curl, CURLOPT_URL, $host); 
+			curl_setopt($curl, CURLOPT_URL, $host);
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
 			curl_setopt($curl, CURLOPT_TIMEOUT, 1);
@@ -771,7 +772,7 @@ class Crypto
 			curl_setopt($curl, CURLOPT_POSTFIELDS, '{"id":"1","method":"get-count-blocks","params":[]}');
 			$res = curl_exec($curl);
 			$res = json_decode($res, true);
-			
+
 			if(isset($res['result']['count_blocks']))
 			{
 				return intval($res['result']['count_blocks']);
@@ -786,7 +787,7 @@ class Crypto
 		if(!empty($host))
 		{
 			$curl = $this->curl;
-			curl_setopt($curl, CURLOPT_URL, $host); 
+			curl_setopt($curl, CURLOPT_URL, $host);
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
 			curl_setopt($curl, CURLOPT_TIMEOUT, 1);
@@ -827,7 +828,7 @@ class Crypto
 			if($url)
 			{
 				$curl = $this->curl;
-				curl_setopt($curl, CURLOPT_URL, $url); 
+				curl_setopt($curl, CURLOPT_URL, $url);
 				curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
 				curl_setopt($curl, CURLOPT_TIMEOUT, 3);
@@ -874,7 +875,7 @@ class Crypto
 	private function queryTorrent($method, $data = [])
 	{
 		try
-		{		
+		{
 			$query = [
 				'id' => time(),
 				'method' => trim($method),
@@ -894,7 +895,7 @@ class Crypto
 			if($url)
 			{
 				$curl = $this->curl;
-				curl_setopt($curl, CURLOPT_URL, $url); 
+				curl_setopt($curl, CURLOPT_URL, $url);
 				curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
 				curl_setopt($curl, CURLOPT_TIMEOUT, 3);
@@ -1026,7 +1027,7 @@ try
 		break;
 
 		case 'create-tx':
-			// 
+			//
 		break;
 
 		case 'send-tx':
