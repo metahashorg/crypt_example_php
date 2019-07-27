@@ -563,7 +563,7 @@ class Crypto
 				curl_setopt($curl, CURLOPT_HTTPGET, false);
 
 				$result = curl_exec($curl);
-				if(strstr($result, 'Transaction accapted.'))
+				if(strstr($result, 'Transaction accepted.'))
 				{
 					return true;
 				}
